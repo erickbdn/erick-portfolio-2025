@@ -1,1 +1,392 @@
 @import 'tailwindcss';
+
+:root {
+    --font-satoshi: 'Satoshi-Variable';
+    --font-alpino: 'Alpino-Variable';
+    --color-primary: #e07a5f;
+    --color-secondary: #f4f1de;
+
+    /* Transparent variants for primary (rgba) */
+    --color-primary-5: rgba(224, 122, 95, 0.05);
+    --color-primary-15: rgba(224, 122, 95, 0.15);
+    --color-primary-30: rgba(224, 122, 95, 0.30);
+    --color-primary-60: rgba(224, 122, 95, 0.60);
+    --color-primary-80: rgba(224, 122, 95, 0.80);
+
+    /* Transparent variants for secondary (rgba) */
+    --color-secondary-5: rgba(244, 241, 222, 0.05);
+    --color-secondary-15: rgba(244, 241, 222, 0.15);
+    --color-secondary-30: rgba(244, 241, 222, 0.30);
+    --color-secondary-60: rgba(244, 241, 222, 0.60);
+    --color-secondary-80: rgba(244, 241, 222, 0.80);
+}
+
+.font-alpino {
+    font-family: var(--font-alpino), sans-serif;
+}
+
+.font-satoshi {
+    font-family: var(--font-satoshi), sans-serif;
+}
+
+/* Text color utility classes */
+.text-primary {
+    color: var(--color-primary);
+}
+.text-primary-5 {
+    color: var(--color-primary-5);
+}
+.text-primary-15 {
+    color: var(--color-primary-15);
+}
+.text-primary-30 {
+    color: var(--color-primary-30);
+}
+.text-primary-60 {
+    color: var(--color-primary-60);
+}
+.text-primary-80 {
+    color: var(--color-primary-80);
+}
+
+.text-secondary {
+    color: var(--color-secondary);
+}
+.text-secondary-5 {
+    color: var(--color-secondary-5);
+}
+.text-secondary-15 {
+    color: var(--color-secondary-15);
+}
+.text-secondary-30 {
+    color: var(--color-secondary-30);
+}
+.text-secondary-60 {
+    color: var(--color-secondary-60);
+}
+.text-secondary-80 {
+    color: var(--color-secondary-80);
+}
+
+/* Background color utility classes */
+.bg-primary {
+    background-color: var(--color-primary);
+}
+.bg-primary-5 {
+    background-color: var(--color-primary-5);
+}
+.bg-primary-15 {
+    background-color: var(--color-primary-15);
+}
+.bg-primary-30 {
+    background-color: var(--color-primary-30);
+}
+.bg-primary-60 {
+    background-color: var(--color-primary-60);
+}
+.bg-primary-80 {
+    background-color: var(--color-primary-80);
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary);
+}
+.bg-secondary-5 {
+    background-color: var(--color-secondary-5);
+}
+.bg-secondary-15 {
+    background-color: var(--color-secondary-15);
+}
+.bg-secondary-30 {
+    background-color: var(--color-secondary-30);
+}
+.bg-secondary-60 {
+    background-color: var(--color-secondary-60);
+}
+.bg-secondary-80 {
+    background-color: var(--color-secondary-80);
+}
+
+/* Border color utility classes */
+.border-primary {
+    border-color: var(--color-primary);
+}
+.border-primary-5 {
+    border-color: var(--color-primary-5);
+}
+.border-primary-15 {
+    border-color: var(--color-primary-15);
+}
+.border-primary-30 {
+    border-color: var(--color-primary-30);
+}
+.border-primary-60 {
+    border-color: var(--color-primary-60);
+}
+.border-primary-80 {
+    border-color: var(--color-primary-80);
+}
+
+.border-secondary {
+    border-color: var(--color-secondary);
+}
+.border-secondary-5 {
+    border-color: var(--color-secondary-5);
+}
+.border-secondary-15 {
+    border-color: var(--color-secondary-15);
+}
+.border-secondary-30 {
+    border-color: var(--color-secondary-30);
+}
+.border-secondary-60 {
+    border-color: var(--color-secondary-60);
+}
+.border-secondary-80 {
+    border-color: var(--color-secondary-80);
+}
+
+  
+/* Alpino */
+
+/**
+* @license
+*
+* Font Family: Alpino
+* Designed by: Alisa Nowak, Jérémie Hornus
+* URL: https://www.fontshare.com/fonts/alpino
+* © 2025 Indian Type Foundry
+*
+* Alpino Thin 
+* Alpino Light 
+* Alpino Regular 
+* Alpino Medium 
+* Alpino Bold 
+* Alpino Black 
+* Alpino Variable (Variable font)
+
+*
+*/
+@font-face {
+    font-family: 'Alpino-Thin';
+    src: url('/fonts/Alpino/Alpino-Thin.woff2') format('woff2'),
+         url('/fonts/Alpino/Alpino-Thin.woff') format('woff'),
+         url('/fonts/Alpino/Alpino-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Alpino-Light';
+    src: url('/fonts/Alpino/Alpino-Light.woff2') format('woff2'),
+         url('/fonts/Alpino/Alpino-Light.woff') format('woff'),
+         url('/fonts/Alpino/Alpino-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Alpino-Regular';
+    src: url('/fonts/Alpino/Alpino-Regular.woff2') format('woff2'),
+         url('/fonts/Alpino/Alpino-Regular.woff') format('woff'),
+         url('/fonts/Alpino/Alpino-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Alpino-Medium';
+    src: url('/fonts/Alpino/Alpino-Medium.woff2') format('woff2'),
+         url('/fonts/Alpino/Alpino-Medium.woff') format('woff'),
+         url('/fonts/Alpino/Alpino-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Alpino-Bold';
+    src: url('/fonts/Alpino/Alpino-Bold.woff2') format('woff2'),
+         url('/fonts/Alpino/Alpino-Bold.woff') format('woff'),
+         url('/fonts/Alpino/Alpino-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Alpino-Black';
+    src: url('/fonts/Alpino/Alpino-Black.woff2') format('woff2'),
+         url('/fonts/Alpino/Alpino-Black.woff') format('woff'),
+         url('/fonts/Alpino/Alpino-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-display: swap;
+    font-style: normal;
+  }
+  /**
+  * This is a variable font
+  * You can control variable axes as shown below:
+  * font-variation-settings: wght 900.0;
+  *
+  * available axes:
+  'wght' (range from 100.0 to 900.0
+  */
+  @font-face {
+    font-family: 'Alpino-Variable';
+    src: url('/fonts/Alpino/Alpino-Variable.woff2') format('woff2'),
+         url('/fonts/Alpino/Alpino-Variable.woff') format('woff'),
+         url('/fonts/Alpino/Alpino-Variable.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+  }
+
+  /* Satoshi */
+  
+  /**
+* @license
+*
+* Font Family: Satoshi
+* Designed by: Deni Anggara
+* URL: https://www.fontshare.com/fonts/satoshi
+* © 2025 Indian Type Foundry
+*
+* Satoshi Light 
+* Satoshi LightItalic 
+* Satoshi Regular 
+* Satoshi Italic 
+* Satoshi Medium 
+* Satoshi MediumItalic 
+* Satoshi Bold 
+* Satoshi BoldItalic 
+* Satoshi Black 
+* Satoshi BlackItalic 
+* Satoshi Variable (Variable font)
+* Satoshi VariableItalic (Variable font)
+
+*
+*/
+@font-face {
+    font-family: 'Satoshi-Light';
+    src: url('/fonts/Satoshi/Satoshi-Light.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-Light.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Satoshi-LightItalic';
+    src: url('/fonts/Satoshi/Satoshi-LightItalic.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-LightItalic.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-display: swap;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'Satoshi-Regular';
+    src: url('/fonts/Satoshi/Satoshi-Regular.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-Regular.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Satoshi-Italic';
+    src: url('/fonts/Satoshi/Satoshi-Italic.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-Italic.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'Satoshi-Medium';
+    src: url('/fonts/Satoshi/Satoshi-Medium.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-Medium.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Satoshi-MediumItalic';
+    src: url('/fonts/Satoshi/Satoshi-MediumItalic.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-MediumItalic.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-display: swap;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'Satoshi-Bold';
+    src: url('/fonts/Satoshi/Satoshi-Bold.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-Bold.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Satoshi-BoldItalic';
+    src: url('/fonts/Satoshi/Satoshi-BoldItalic.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-BoldItalic.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-display: swap;
+    font-style: italic;
+  }
+  @font-face {
+    font-family: 'Satoshi-Black';
+    src: url('/fonts/Satoshi/Satoshi-Black.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-Black.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-display: swap;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Satoshi-BlackItalic';
+    src: url('/fonts/Satoshi/Satoshi-BlackItalic.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-BlackItalic.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-display: swap;
+    font-style: italic;
+  }
+  /**
+  * This is a variable font
+  * You can control variable axes as shown below:
+  * font-variation-settings: wght 900.0;
+  *
+  * available axes:
+  'wght' (range from 300.0 to 900.0
+  */
+  @font-face {
+    font-family: 'Satoshi-Variable';
+    src: url('/fonts/Satoshi/Satoshi-Variable.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-Variable.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-Variable.ttf') format('truetype');
+    font-weight: 300 900;
+    font-display: swap;
+    font-style: normal;
+  }
+  /**
+  * This is a variable font
+  * You can control variable axes as shown below:
+  * font-variation-settings: wght 900.0;
+  *
+  * available axes:
+  'wght' (range from 300.0 to 900.0
+  */
+  @font-face {
+    font-family: 'Satoshi-VariableItalic';
+    src: url('/fonts/Satoshi/Satoshi-VariableItalic.woff2') format('woff2'),
+         url('/fonts/Satoshi/Satoshi-VariableItalic.woff') format('woff'),
+         url('/fonts/Satoshi/Satoshi-VariableItalic.ttf') format('truetype');
+    font-weight: 300 900;
+    font-display: swap;
+    font-style: italic;
+  }
+  
+  
