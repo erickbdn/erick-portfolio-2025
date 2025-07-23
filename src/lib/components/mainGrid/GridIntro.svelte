@@ -1,37 +1,68 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import {gsap} from 'gsap';
-	import { onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { gsap } from 'gsap';
+	import { get } from 'svelte/store';
+	import { gridIntroHasSeenIntro } from '$lib/stores/intro';
+	import { isNavigatingAway } from '$lib/stores/exitTransition';
 
 	let headingSpans: HTMLSpanElement[] = [];
 	let descEl: HTMLParagraphElement;
-
 	const headingText = 'KIRE.DEV';
 
+	let timeline: gsap.core.Timeline;
+	let unsubscribe: () => void;
+
 	onMount(() => {
-		// Initial states
+		const hasSeen = get(gridIntroHasSeenIntro);
+
+		const duration = hasSeen ? 0.7 : 1.2;
+		const delay = hasSeen ? 0.2 : 2.2;
+
 		gsap.set(headingSpans, { opacity: 0, y: -50 });
 		gsap.set(descEl, { opacity: 0, y: 50 });
 
-		const tl = gsap.timeline({ defaults: { ease: 'expo.out', duration: 1.2 } });
+		timeline = gsap.timeline({ defaults: { ease: 'expo.out', duration } });
 
-		tl.to(headingSpans, {
-			opacity: 1,
-			y: 0,
-			stagger: 0.1,
-			delay: 2.2
-		}).to(
-			descEl,
-			{ opacity: 1, y: 0 },
-			'-=0.8' // Overlap with end of heading animation
-		);
+		timeline
+			.to(headingSpans, {
+				opacity: 1,
+				y: 0,
+				stagger: 0.1,
+				delay
+			})
+			.to(descEl, { opacity: 1, y: 0 }, `-=${hasSeen ? 0.4 : 0.8}`);
+
+		gridIntroHasSeenIntro.set(true);
+		unsubscribe = isNavigatingAway.subscribe((val) => {
+		if (val) {
+			// Exit animation
+			gsap.to(headingSpans, {
+				opacity: 0,
+				y: 50,
+				duration: 1.2,
+				ease: 'circ.inOut'
+			});
+			gsap.to(descEl, {
+				opacity: 0,
+				y: 50,
+				duration: 1.2,
+				ease: 'circ.inOut'
+			});
+		}
 	});
+	});
+
+
 
 	onDestroy(() => {
-		headingSpans.forEach(span => gsap.killTweensOf(span));
-		gsap.killTweensOf(descEl);
-	});
+	if (timeline) timeline.kill();
+	headingSpans.forEach((span) => gsap.killTweensOf(span));
+	gsap.killTweensOf(descEl);
+	if (unsubscribe) unsubscribe();
+});
 </script>
+
+
 
 <header class="flex flex-col gap-4 -mt-4">
 	<div class="overflow-hidden w-fit">

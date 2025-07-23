@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import gsap from 'gsap';
+	import { gsap } from 'gsap';
+	import { gridProjectsHasSeenIntro } from '$lib/stores/intro';
+	import { get } from 'svelte/store';
+	import { isNavigatingAway } from '$lib/stores/exitTransition';
+	import { onDestroy } from 'svelte';
 
 	export let projects: Array<{
 		_id: string;
@@ -35,6 +39,8 @@
 	$: currentProject = projects[activeIndex];
 	$: totalImages = currentProject?.images?.length || 0;
 
+	let unsubscribe: () => void;
+
 	function prevImage() {
 		transitionDirection = 'prev';
 		activeImageIndex = (activeImageIndex - 1 + totalImages) % totalImages;
@@ -64,7 +70,6 @@
 
 		gsap.set(imageRef, {
 			clipPath: fromClip,
-			scale: 1.03,
 			opacity: 0,
 		});
 
@@ -74,7 +79,7 @@
 			opacity: 1,
 			duration: 1.5,
 			ease: 'expo.out',
-			delay: isInitial ? 2.2 : 0,
+			delay: isInitial ? 2.2 : 0.4,
 		});
 
 		if (isTab || isInitial) {
@@ -106,42 +111,128 @@
 	}
 
 	onMount(() => {
-		gsap.set(headingRef, { yPercent: 100, opacity: 0 });
-		gsap.set(Array.from(tabListRef.children), { yPercent: 100, opacity: 0 });
-		gsap.set([metaRef, textRef], { opacity: 0, y: 40 });
+		const hasSeen = get(gridProjectsHasSeenIntro);
 
-		const tl = gsap.timeline();
+		if (hasSeen) {
+			gsap.set(headingRef, { yPercent: 100, opacity: 0 });
+			gsap.set(Array.from(tabListRef.children), { yPercent: 100, opacity: 0 });
+			gsap.set([metaRef, textRef], { opacity: 0, y: 40 });
 
-		tl.to(headingRef, {
-			yPercent: 0,
-			opacity: 1,
-			duration: 1.5,
-			ease: 'expo.out',
-			delay: 2.2
-		})
-		.to(Array.from(tabListRef.children), {
-			yPercent: 0,
-			opacity: 1,
-			duration: 1.5,
-			ease: 'expo.out',
-			stagger: 0.2,
-			delay: 2.2
-		}, 0)
-		.to([metaRef, textRef], {
-			opacity: 1,
-			y: 0,
-			duration: 1.5,
-			ease: 'expo.out',
-			stagger: 0.2,
-			onStart: () => {
-				metaRef.classList.remove('backdrop-blur-lg');
-				textRef.classList.remove('backdrop-blur-lg');
-			},
-			onComplete: () => {
-				metaRef.classList.add('backdrop-blur-lg');
-				textRef.classList.add('backdrop-blur-lg');
+			const duration = 0.7;
+			const delay = 0.2;
+			const tl = gsap.timeline();
+			tl.to(headingRef, {
+				yPercent: 0,
+				opacity: 1,
+				duration,
+				ease: 'expo.out',
+				delay
+			})
+			.to(Array.from(tabListRef.children), {
+				yPercent: 0,
+				opacity: 1,
+				duration,
+				ease: 'expo.out',
+				stagger: 0.2,
+				delay
+			}, 0)
+			.to([metaRef, textRef], {
+				opacity: 1,
+				y: 0,
+				duration,
+				ease: 'expo.out',
+				stagger: 0.2,
+				onStart: () => {
+					metaRef.classList.remove('backdrop-blur-lg');
+					textRef.classList.remove('backdrop-blur-lg');
+				},
+				onComplete: () => {
+					metaRef.classList.add('backdrop-blur-lg');
+					textRef.classList.add('backdrop-blur-lg');
+				}
+			}, '-=0.4');
+			initialReveal = false;
+		} else {
+			gsap.set(headingRef, { yPercent: 100, opacity: 0 });
+			gsap.set(Array.from(tabListRef.children), { yPercent: 100, opacity: 0 });
+			gsap.set([metaRef, textRef], { opacity: 0, y: 40 });
+
+			const tl = gsap.timeline();
+
+			tl.to(headingRef, {
+				yPercent: 0,
+				opacity: 1,
+				duration: 1.5,
+				ease: 'expo.out',
+				delay: 2.2
+			})
+			.to(Array.from(tabListRef.children), {
+				yPercent: 0,
+				opacity: 1,
+				duration: 1.5,
+				ease: 'expo.out',
+				stagger: 0.2,
+				delay: 2.2
+			}, 0)
+			.to([metaRef, textRef], {
+				opacity: 1,
+				y: 0,
+				duration: 1.5,
+				ease: 'expo.out',
+				stagger: 0.2,
+				onStart: () => {
+					metaRef.classList.remove('backdrop-blur-lg');
+					textRef.classList.remove('backdrop-blur-lg');
+				},
+				onComplete: () => {
+					metaRef.classList.add('backdrop-blur-lg');
+					textRef.classList.add('backdrop-blur-lg');
+				}
+			}, "-=1.2")
+		}
+		gridProjectsHasSeenIntro.set(true);
+
+		unsubscribe = isNavigatingAway.subscribe((val) => {
+			if (val) {
+				gsap.to(headingRef, {
+					yPercent: 100,
+					opacity: 0,
+					duration: 1.2,
+					ease: 'circ.inOut'
+				});
+				if (tabListRef) {
+					gsap.to(Array.from(tabListRef.children), {
+						yPercent: 100,
+						opacity: 0,
+						duration: 1.2,
+						ease: 'circ.inOut',
+						stagger: 0.05
+					});
+				}
+				gsap.to([metaRef, textRef], {
+					opacity: 0,
+					y: 50,
+					duration: 1.2,
+					ease: 'circ.inOut',
+					stagger: 0.05
+				});
+				if (imageRef) {
+					gsap.to(imageRef, {
+						opacity: 0,
+						duration: 1.2,
+						ease: 'circ.inOut'
+					});
+				}
 			}
-		}, "-=1.2");
+		});
+	});
+
+	onDestroy(() => {
+		gsap.killTweensOf([headingRef, metaRef, textRef, imageRef]);
+		if (tabListRef) {
+			Array.from(tabListRef.children).forEach((el) => gsap.killTweensOf(el));
+		}
+		if (unsubscribe) unsubscribe();
 	});
 </script>
 
@@ -158,9 +249,9 @@
 	</header>
 
 	<!-- Navigation -->
-	<nav bind:this={tabListRef as HTMLDivElement} class="flex gap-2 overflow-hidden pt-2 pb-4" aria-label="Project navigation">
+	<nav bind:this={tabListRef as HTMLDivElement} class="flex gap-2 overflow-hidden pt-2 pb-2" aria-label="Project navigation">
 		{#each projects as project, i}
-			<div class="overflow-hidden" style="opacity: 0">
+			<div class="overflow-hidden pb-2" style="opacity: 0">
 				<button
 					on:click={() => switchTab(i)}
 					class="block rounded-sm px-8 py-2 text-sm font-medium font-satoshi backdrop-blur-lg transition-all duration-200

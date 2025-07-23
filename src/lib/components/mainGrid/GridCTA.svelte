@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { gsap } from 'gsap';
+	import { gridCTAHasSeenIntro } from '$lib/stores/intro';
+	import { get } from 'svelte/store';
+	import { isNavigatingAway } from '$lib/stores/exitTransition'; // ✅ add this
 
 	let titleRef: HTMLHeadingElement;
 	let descRef: HTMLParagraphElement;
@@ -15,18 +18,37 @@
 	let hoverTimeline: gsap.core.Timeline | null = null;
 	let hoverHandler: (() => void) | null = null;
 
+	let unsubscribe: () => void; // ✅
+
 	onMount(() => {
-		// Set initial state immediately to avoid FOUC
+		const hasSeen = get(gridCTAHasSeenIntro);
+
+		const duration = hasSeen ? 0.7 : 1.2;
+		const delay = hasSeen ? 0.2 : 2.2;
+
 		gsap.set([titleRef, descRef, infoRef, buttonWrapperRef], { opacity: 0, y: 50 });
 
-		const tl = gsap.timeline({ defaults: { ease: 'expo.out', duration: 1.2 } });
+		const tl = gsap.timeline({ defaults: { ease: 'expo.out', duration } });
+		const overlap = hasSeen ? '-=0.6' : '-=1';
+		tl.to(titleRef, { opacity: 1, y: 0, delay })
+		  .to(descRef, { opacity: 1, y: 0, delay: 0.2 }, overlap)
+		  .to(infoRef, { opacity: 1, y: 0, delay: 0.2 }, overlap)
+		  .to(buttonWrapperRef, { opacity: 1, y: 0, delay: 0.2 }, overlap);
 
-		tl.to(titleRef, { opacity: 1, y: 0, delay: 2.2 })
-		  .to(descRef, { opacity: 1, y: 0, delay: 0.2 }, "-=1")
-		  .to(infoRef, { opacity: 1, y: 0, delay: 0.2 }, "-=1")
-		  .to(buttonWrapperRef, { opacity: 1, y: 0, delay: 0.2 }, "-=1");
+		// ✅ Exit animation
+		unsubscribe = isNavigatingAway.subscribe((exit) => {
+			if (exit) {
+				gsap.to([titleRef, descRef, infoRef, buttonWrapperRef], {
+					opacity: 0,
+					y: 50,
+					duration: 1.2,
+					ease: 'expo.inOut',
+					stagger: 0.05
+				});
+			}
+		});
 
-		// Hover effect for button text
+		// Hover animation for the button
 		const span = buttonRef.querySelector("span span") as HTMLSpanElement;
 		if (span) {
 			hoverTimeline = gsap.timeline({ paused: true });
@@ -37,6 +59,8 @@
 			hoverHandler = () => hoverTimeline && hoverTimeline.play(0);
 			buttonRef.addEventListener("mouseenter", hoverHandler);
 		}
+
+		gridCTAHasSeenIntro.set(true);
 	});
 
 	onDestroy(() => {
@@ -46,13 +70,15 @@
 			hoverTimeline.kill();
 			hoverTimeline = null;
 		}
-
 		if (buttonRef && hoverHandler) {
 			buttonRef.removeEventListener("mouseenter", hoverHandler);
 			hoverHandler = null;
 		}
+		if (unsubscribe) unsubscribe(); // ✅
 	});
 </script>
+
+
 
 <section class="flex flex-col justify-end h-full p-6 items-end text-right relative">
 	<!-- Title -->

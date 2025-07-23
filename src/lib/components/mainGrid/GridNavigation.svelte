@@ -1,6 +1,12 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import gsap from 'gsap';
+  import { gridNavigationHasSeenIntro } from '$lib/stores/intro';
+  import { get } from 'svelte/store';
+  import { goto } from '$app/navigation';
+import { triggerExplosion } from '$lib/stores/transition';
+import { isNavigatingAway, targetRoute } from '$lib/stores/exitTransition';
+import { page } from '$app/stores';
 
   type NavLink = {
     href: string;
@@ -17,6 +23,28 @@
   ];
 
   let navItemRefs: HTMLLIElement[] = [];
+  let unsubscribe: () => void;
+
+  function handleNavClick(href: string) {
+  const currentPath = get(page).url.pathname;
+
+  if (href === currentPath) {
+    // Already on this page — skip animation
+    return;
+  }
+
+  isNavigatingAway.set(true);
+  targetRoute.set(href);
+  triggerExplosion.set(true);
+
+  setTimeout(() => {
+    goto(href);
+    isNavigatingAway.set(false);
+    triggerExplosion.set(false);
+  }, 1200);
+}
+
+
 
   const animateNavItemsIn = () => {
     gsap.set(navItemRefs, { opacity: 0, y: 50 }); // FOUC protection
@@ -70,16 +98,51 @@
   };
 
   onMount(() => {
-    animateNavItemsIn();
-    setupEventListeners();
-  });
+  const hasSeen = get(gridNavigationHasSeenIntro);
 
-  onDestroy(() => {
-    cleanupEventListeners();
-    navItemRefs.forEach((element) => {
-      if (element) gsap.killTweensOf(element);
-    });
+  const duration = hasSeen ? 0.7 : 1.5;
+  const delay = hasSeen ? 0.2 : 2.2;
+
+  gsap.set(navItemRefs, { opacity: 0, y: 50 }); // FOUC protection
+  navItemRefs.forEach((element, index) => {
+    gsap.fromTo(
+      element,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration,
+        ease: 'expo.out',
+        delay: delay + index * 0.2
+      }
+    );
   });
+  gridNavigationHasSeenIntro.set(true);
+
+  setupEventListeners();
+
+  unsubscribe = isNavigatingAway.subscribe((val) => {
+    if (val) {
+      gsap.to(navItemRefs, {
+        opacity: 0,
+        y: 50,
+        duration: 1.2,
+        ease: 'circ.inOut',
+        stagger: 0.05
+      });
+    }
+  });
+});
+
+
+onDestroy(() => {
+  cleanupEventListeners();
+  navItemRefs.forEach((element) => {
+    if (element) gsap.killTweensOf(element);
+  });
+  if (unsubscribe) unsubscribe();
+});
+
 </script>
 
 <nav class="pl-[12rem]" aria-label="Main navigation">
@@ -94,6 +157,7 @@
           <a
             {href}
             class="group text-secondary font-satoshi relative flex w-full items-center justify-between overflow-hidden px-4 py-2 text-[1rem] font-medium hover:text-[var(--color-primary)]"
+            on:click|preventDefault={(e) => handleNavClick(href)}
           >
             <span class="text-left transition-colors duration-400 group-hover:text-[var(--color-primary)]">
               {number}

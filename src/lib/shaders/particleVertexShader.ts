@@ -5,6 +5,7 @@ attribute float shapeIndex;
 uniform float uTime;
 uniform float uSphereRadius;
 uniform vec2 uMouse;
+uniform float uSize;
 
 varying float vShapeIndex;
 
@@ -99,7 +100,8 @@ void main() {
     finalPos += normalize(finalPos) * strength * 1.5;
   }
 
-  float baseSize = 8.0;
+ float baseSize = uSize;
+
   float sizeBoost = smoothstep(repulseRadius, 0.0, distToCursor) * 30.0;
   gl_PointSize = baseSize + sizeBoost;
 

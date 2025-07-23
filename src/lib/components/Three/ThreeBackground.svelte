@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { TextureLoader } from 'three';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import gsap from 'gsap';
+	import { triggerExplosion, isContracting } from '$lib/stores/transition';
 	import { particleVertexShader } from '$lib/shaders/particleVertexShader';
 	import { particleFragmentShader } from '$lib/shaders/particleFragmentShader';
 
@@ -81,7 +81,8 @@
 				uMouse: { value: new THREE.Vector2() },
 				uTexture: { value: texture },
 				uAtlasCols: { value: atlasCols },
-				uAtlasRows: { value: atlasRows }
+				uAtlasRows: { value: atlasRows },
+				uSize: { value: 8.0 },
 			}
 		});
 
@@ -89,30 +90,27 @@
 		scene.add(particles);
 
 		const clock = new THREE.Clock();
-		let rotationMultiplier = 8.0; // Start fast
+		let rotationMultiplier = 20.0;
 
-		// 🌀 Animate intro
-		const tl = gsap.timeline();
-
-		tl.to(renderer.domElement, {
+		// 🌀 Intro animation
+		const intro = gsap.timeline();
+		intro.to(renderer.domElement, {
 			opacity: 1,
 			duration: 1.8,
 			ease: 'circ.out',
-			delay: 0.2,
+			delay: 0.2
 		});
-
-		tl.to(
+		intro.to(
 			material.uniforms.uSphereRadius,
 			{
-				value: 3.2, // Target radius
+				value: 3.2,
 				duration: 3,
 				ease: 'circ.inOut',
 				delay: 0.4
 			},
 			0
 		);
-
-		tl.to(
+		intro.to(
 			{ speed: rotationMultiplier },
 			{
 				speed: 1.0,
@@ -125,7 +123,64 @@
 			},
 			0.4
 		);
+		intro.to(material.uniforms.uSize, {
+	value: 8.0,
+	duration: 3,
+	ease: 'circ.inOut',
+	delay: 0.4
+}, 0);
 
+
+		// 💥 Explosion → ⏳ Contract
+		const explosionTimeline = gsap.timeline({ paused: true });
+
+		// EXPLODE: All up together, slowly
+
+		// Animate speed as a separate tween so it actually updates the variable
+		const speedObj = { speed: rotationMultiplier };
+		explosionTimeline.to(
+			[
+				material.uniforms.uSphereRadius,
+				material.uniforms.uSize
+			],
+			{
+				value: (i: number) => [0, 50][i], // radius, size
+				duration: 1.2, // slow explosion
+				ease: 'circ.inOut'
+			},
+			0
+		);
+		
+
+		// CONTRACT: All down together, slowly
+		explosionTimeline.to(
+			[
+				material.uniforms.uSphereRadius,
+				material.uniforms.uSize,
+				
+			],
+			{
+				value: (i: number) => [3.2, 8.0][i], // radius, size, speed
+				duration: 2.0, // slow return
+				ease: 'power4.out',
+				
+				onStart: () => isContracting.set(true),
+				onComplete: () => {
+					isContracting.set(false);
+					rotationMultiplier = 1.0; // Ensure it resets to default
+				}
+			}
+		);
+
+
+		// Listen for store updates
+		triggerExplosion.subscribe((value) => {
+			if (value) {
+				explosionTimeline.play(0);
+			}
+		});
+
+		// 🎥 Animation loop
 		const animate = () => {
 			const elapsed = clock.getElapsedTime();
 			material.uniforms.uTime.value = elapsed;
@@ -148,6 +203,7 @@
 
 		window.addEventListener('resize', resize);
 
+		// Cleanup
 		return () => {
 			cancelAnimationFrame(animationFrame);
 			window.removeEventListener('resize', resize);
