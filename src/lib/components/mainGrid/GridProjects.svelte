@@ -70,7 +70,7 @@
 
 		gsap.set(imageRef, {
 			clipPath: fromClip,
-			opacity: 0,
+			opacity: 0
 		});
 
 		gsap.to(imageRef, {
@@ -79,7 +79,7 @@
 			opacity: 1,
 			duration: 1.5,
 			ease: 'expo.out',
-			delay: isInitial ? 2.2 : 0.4,
+			delay: isInitial ? 2.2 : 0.2
 		});
 
 		if (isTab || isInitial) {
@@ -128,29 +128,37 @@
 				ease: 'expo.out',
 				delay
 			})
-			.to(Array.from(tabListRef.children), {
-				yPercent: 0,
-				opacity: 1,
-				duration,
-				ease: 'expo.out',
-				stagger: 0.2,
-				delay
-			}, 0)
-			.to([metaRef, textRef], {
-				opacity: 1,
-				y: 0,
-				duration,
-				ease: 'expo.out',
-				stagger: 0.2,
-				onStart: () => {
-					metaRef.classList.remove('backdrop-blur-lg');
-					textRef.classList.remove('backdrop-blur-lg');
-				},
-				onComplete: () => {
-					metaRef.classList.add('backdrop-blur-lg');
-					textRef.classList.add('backdrop-blur-lg');
-				}
-			}, '-=0.4');
+				.to(
+					Array.from(tabListRef.children),
+					{
+						yPercent: 0,
+						opacity: 1,
+						duration,
+						ease: 'expo.out',
+						stagger: 0.2,
+						delay
+					},
+					0
+				)
+				.to(
+					[metaRef, textRef],
+					{
+						opacity: 1,
+						y: 0,
+						duration,
+						ease: 'expo.out',
+						stagger: 0.2,
+						onStart: () => {
+							metaRef.classList.remove('backdrop-blur-lg');
+							textRef.classList.remove('backdrop-blur-lg');
+						},
+						onComplete: () => {
+							metaRef.classList.add('backdrop-blur-lg');
+							textRef.classList.add('backdrop-blur-lg');
+						}
+					},
+					'-=0.4'
+				);
 			initialReveal = false;
 		} else {
 			gsap.set(headingRef, { yPercent: 100, opacity: 0 });
@@ -166,29 +174,37 @@
 				ease: 'expo.out',
 				delay: 2.2
 			})
-			.to(Array.from(tabListRef.children), {
-				yPercent: 0,
-				opacity: 1,
-				duration: 1.5,
-				ease: 'expo.out',
-				stagger: 0.2,
-				delay: 2.2
-			}, 0)
-			.to([metaRef, textRef], {
-				opacity: 1,
-				y: 0,
-				duration: 1.5,
-				ease: 'expo.out',
-				stagger: 0.2,
-				onStart: () => {
-					metaRef.classList.remove('backdrop-blur-lg');
-					textRef.classList.remove('backdrop-blur-lg');
-				},
-				onComplete: () => {
-					metaRef.classList.add('backdrop-blur-lg');
-					textRef.classList.add('backdrop-blur-lg');
-				}
-			}, "-=1.2")
+				.to(
+					Array.from(tabListRef.children),
+					{
+						yPercent: 0,
+						opacity: 1,
+						duration: 1.5,
+						ease: 'expo.out',
+						stagger: 0.2,
+						delay: 2.2
+					},
+					0
+				)
+				.to(
+					[metaRef, textRef],
+					{
+						opacity: 1,
+						y: 0,
+						duration: 1.5,
+						ease: 'expo.out',
+						stagger: 0.2,
+						onStart: () => {
+							metaRef.classList.remove('backdrop-blur-lg');
+							textRef.classList.remove('backdrop-blur-lg');
+						},
+						onComplete: () => {
+							metaRef.classList.add('backdrop-blur-lg');
+							textRef.classList.add('backdrop-blur-lg');
+						}
+					},
+					'-=1.2'
+				);
 		}
 		gridProjectsHasSeenIntro.set(true);
 
@@ -236,25 +252,32 @@
 	});
 </script>
 
-<section class="flex h-full w-full flex-col overflow-hidden" bind:this={sectionRef as HTMLDivElement}>
+<section
+	class="flex h-full w-full flex-col overflow-hidden"
+	bind:this={sectionRef as HTMLDivElement}
+>
 	<!-- Header -->
-	<header class="overflow-hidden">
+	<div class="overflow-hidden">
 		<h1
 			bind:this={headingRef}
-			class="mb-2 text-[2.5rem] font-bold text-secondary font-satoshi"
+			class="text-secondary font-satoshi mb-2 text-[2.5rem] font-bold"
 			style="opacity: 0;"
 		>
-			Projects
+			PROJECTS
 		</h1>
-	</header>
+	</div>
 
 	<!-- Navigation -->
-	<nav bind:this={tabListRef as HTMLDivElement} class="flex gap-2 overflow-hidden pt-2 pb-2" aria-label="Project navigation">
+	<nav
+		bind:this={tabListRef as HTMLDivElement}
+		class="flex gap-2 overflow-hidden pt-2 pb-2"
+		aria-label="Project navigation"
+	>
 		{#each projects as project, i}
 			<div class="overflow-hidden pb-2" style="opacity: 0">
 				<button
 					on:click={() => switchTab(i)}
-					class="block rounded-sm px-8 py-2 text-sm font-medium font-satoshi backdrop-blur-lg transition-all duration-200
+					class="font-satoshi block rounded-sm px-8 py-2 text-sm font-medium backdrop-blur-lg transition-all duration-200
 					hover:cursor-pointer hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)]"
 					class:bg-[var(--color-secondary)]={activeIndex === i}
 					class:text-[var(--color-primary)]={activeIndex === i}
@@ -270,9 +293,10 @@
 	<!-- Main Display -->
 	<article class="flex min-h-0 flex-grow flex-col justify-end">
 		<div class="flex max-h-full w-full items-stretch gap-4 overflow-hidden">
-
 			<!-- Image -->
-			<figure class="relative flex aspect-[4/3] w-1/2 items-center justify-center overflow-hidden rounded-sm">
+			<figure
+				class="relative flex aspect-[4/3] w-1/2 items-center justify-center overflow-hidden rounded-sm"
+			>
 				{#if totalImages > 0}
 					<img
 						bind:this={imageRef}
@@ -285,20 +309,29 @@
 			</figure>
 
 			<!-- Meta Info -->
-			<aside class="h-fit rounded-lg overflow-hidden">
+			<aside class="h-fit overflow-hidden rounded-lg">
 				<div
 					class="flex flex-col items-start justify-center gap-4"
 					bind:this={metaRef}
 					style="opacity: 0;"
 				>
 					<div class=" p-2">
-						<span class="text-sm font-medium text-secondary font-satoshi">
-							{String(activeImageIndex + 1).padStart(2, '0')} / {String(totalImages).padStart(2, '0')}
+						<span class="text-secondary font-satoshi text-sm font-medium">
+							{String(activeImageIndex + 1).padStart(2, '0')} / {String(totalImages).padStart(
+								2,
+								'0'
+							)}
 						</span>
 						{#if totalImages > 1}
-							<div class="mt-2 flex flex-col gap-2 text-sm text-secondary">
-								<button on:click={prevImage} class="transition hover:cursor-pointer hover:opacity-80">← Prev</button>
-								<button on:click={nextImage} class="transition hover:cursor-pointer hover:opacity-80">Next →</button>
+							<div class="text-secondary mt-2 flex flex-col gap-2 text-sm">
+								<button
+									on:click={prevImage}
+									class="transition hover:cursor-pointer hover:opacity-80">Prev</button
+								>
+								<button
+									on:click={nextImage}
+									class="transition hover:cursor-pointer hover:opacity-80">Next -></button
+								>
 							</div>
 						{/if}
 					</div>
@@ -306,9 +339,9 @@
 			</aside>
 
 			<!-- Text -->
-			<aside class="w-1/3 h-fit rounded-lg overflow-hidden">
+			<aside class="h-fit w-1/3 overflow-hidden rounded-lg">
 				<div
-					class="text-sm text-secondary font-satoshi p-2"
+					class="text-secondary font-satoshi p-2 text-sm"
 					bind:this={textRef}
 					style="opacity: 0;"
 				>

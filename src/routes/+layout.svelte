@@ -2,22 +2,25 @@
 <script lang="ts">
 	import '../app.css';
 	import ThreeBackground from '$lib/components/Three/ThreeBackground.svelte';
-	import { triggerExplosion } from '$lib/stores/transition';
-
-	let exploding = false;
-
-	const unsubscribe = triggerExplosion.subscribe((v) => {
-		exploding = v;
-	});
-
-	// optional: clean up
-	import { onDestroy } from 'svelte';
-	onDestroy(() => unsubscribe());
+	import GridNavigation from '$lib/components/mainGrid/GridNavigation.svelte';
 </script>
 
-<!-- Three.js background, persistent across pages -->
-<div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+<!-- Background layer (non-interactive) -->
+<div class="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
 	<ThreeBackground />
+</div>
+
+<!-- GridNavigation layer (interactive, follows 2x2 layout) -->
+<div class="pointer-events-none absolute inset-0 z-50">
+	<div class="grid h-full grid-cols-2 grid-rows-2 gap-4 p-4">
+		<div></div>
+		<!-- This is where GridNavigation shows up (top-right cell) -->
+		<div class="pointer-events-none">
+			<GridNavigation />
+		</div>
+		<div></div>
+		<div></div>
+	</div>
 </div>
 
 <!-- Page content slot -->

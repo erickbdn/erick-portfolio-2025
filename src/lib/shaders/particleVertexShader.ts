@@ -1,13 +1,20 @@
 export const particleVertexShader = `
+precision mediump float;
+
 attribute float seed;
 attribute float shapeIndex;
+attribute float size;
 
 uniform float uTime;
 uniform float uSphereRadius;
 uniform vec2 uMouse;
 uniform float uSize;
+uniform float uIsImageMode;
+uniform float uImageSize;
 
 varying float vShapeIndex;
+varying vec3 vColor;
+varying float vAlpha;
 
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -79,17 +86,22 @@ vec3 rotateAroundAxis(vec3 v, vec3 axis, float angle) {
 }
 
 void main() {
-  float radius = uSphereRadius;
+  vec3 finalPos = position;
+  
+  // Only apply flow field effect when not in image mode
+  if (uIsImageMode < 1.0) {
+    float radius = uSphereRadius;
+    vec3 baseDir = normalize(position);
+    vec3 curlInput = baseDir * 0.6 + vec3(seed * 15.0);
+    vec3 curlAxis = normalize(curlNoise(curlInput));
 
-  vec3 baseDir = normalize(position);
-  vec3 curlInput = baseDir * 0.6 + vec3(seed * 15.0);
-  vec3 curlAxis = normalize(curlNoise(curlInput));
+    float angle = uTime * 0.3 + seed * 6.28;
+    vec3 rotatedDir = rotateAroundAxis(baseDir, curlAxis, angle);
 
-  float angle = uTime * 0.3 + seed * 6.28;
-  vec3 rotatedDir = rotateAroundAxis(baseDir, curlAxis, angle);
+    finalPos = mix(position, rotatedDir * radius, 1.0 - uIsImageMode);
+  }
 
-  vec3 finalPos = rotatedDir * radius;
-
+  // Mouse interaction (works in both modes)
   vec4 clipPos = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
   vec2 clipXY = clipPos.xy / clipPos.w;
 
@@ -100,13 +112,33 @@ void main() {
     finalPos += normalize(finalPos) * strength * 1.5;
   }
 
- float baseSize = uSize;
+  // Enhanced dynamic sizing with organic variation
+  float baseSize = mix(uSize, size, uIsImageMode);
+  
+  // Add organic size variation based on position and seed
+  float organicVariation = 1.0 + sin(finalPos.x * 0.3 + seed * 6.28) * 0.3;
+  baseSize *= organicVariation;
+  
+  // Mouse interaction size boost
+  float sizeBoost = smoothstep(repulseRadius, 0.0, distToCursor) * 15.0;
+  
+  // Distance-based size scaling for depth
+  float distanceFromCamera = length(finalPos);
+  float depthScale = 1.0 + (8.0 - distanceFromCamera) * 0.15;
+  
+  // Enhanced size for image mode particles
+  float imageSizeMultiplier = 1.0 + uIsImageMode * 0.1;
+  
+  gl_PointSize = (baseSize + sizeBoost) * depthScale * imageSizeMultiplier;
 
-  float sizeBoost = smoothstep(repulseRadius, 0.0, distToCursor) * 30.0;
-  gl_PointSize = baseSize + sizeBoost;
+  // Enhanced alpha for organic clustering effect
+  float distanceAlpha = 1.0 - smoothstep(0.0, 15.0, distanceFromCamera);
+  float clusterAlpha = 0.7 + sin(seed * 6.28 + uTime * 0.5) * 0.3;
+  float imageAlpha = mix(1.0, 0.9, uIsImageMode); // Higher alpha for image mode
+  vAlpha = distanceAlpha * clusterAlpha * imageAlpha;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
-
   vShapeIndex = shapeIndex;
+  vColor = color;
 }
 `;

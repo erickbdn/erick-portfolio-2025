@@ -65,7 +65,7 @@
 
 
 <header class="flex flex-col gap-4 -mt-4">
-	<div class="overflow-hidden w-fit">
+	<div class="w-fit">
 		<h1
 			class="text-[8rem] font-black text-secondary font-alpino leading-none -mb-4 -ml-2 backdrop-blur-lg"
 		>

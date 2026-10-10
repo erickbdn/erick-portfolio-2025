@@ -31,9 +31,9 @@
 		const tl = gsap.timeline({ defaults: { ease: 'expo.out', duration } });
 		const overlap = hasSeen ? '-=0.6' : '-=1';
 		tl.to(titleRef, { opacity: 1, y: 0, delay })
-		  .to(descRef, { opacity: 1, y: 0, delay: 0.2 }, overlap)
-		  .to(infoRef, { opacity: 1, y: 0, delay: 0.2 }, overlap)
-		  .to(buttonWrapperRef, { opacity: 1, y: 0, delay: 0.2 }, overlap);
+			.to(descRef, { opacity: 1, y: 0, delay: 0.2 }, overlap)
+			.to(infoRef, { opacity: 1, y: 0, delay: 0.2 }, overlap)
+			.to(buttonWrapperRef, { opacity: 1, y: 0, delay: 0.2 }, overlap);
 
 		// ✅ Exit animation
 		unsubscribe = isNavigatingAway.subscribe((exit) => {
@@ -49,15 +49,15 @@
 		});
 
 		// Hover animation for the button
-		const span = buttonRef.querySelector("span span") as HTMLSpanElement;
+		const span = buttonRef.querySelector('span span') as HTMLSpanElement;
 		if (span) {
 			hoverTimeline = gsap.timeline({ paused: true });
-			hoverTimeline.to(span, { duration: 0.2, yPercent: -150, ease: "power2.in" });
+			hoverTimeline.to(span, { duration: 0.2, yPercent: -150, ease: 'power2.in' });
 			hoverTimeline.set(span, { yPercent: 150 });
 			hoverTimeline.to(span, { duration: 0.2, yPercent: 0 });
 
 			hoverHandler = () => hoverTimeline && hoverTimeline.play(0);
-			buttonRef.addEventListener("mouseenter", hoverHandler);
+			buttonRef.addEventListener('mouseenter', hoverHandler);
 		}
 
 		gridCTAHasSeenIntro.set(true);
@@ -71,48 +71,46 @@
 			hoverTimeline = null;
 		}
 		if (buttonRef && hoverHandler) {
-			buttonRef.removeEventListener("mouseenter", hoverHandler);
+			buttonRef.removeEventListener('mouseenter', hoverHandler);
 			hoverHandler = null;
 		}
 		if (unsubscribe) unsubscribe(); // ✅
 	});
 </script>
 
-
-
-<section class="flex flex-col justify-end h-full p-6 items-end text-right relative">
+<section class="relative flex h-full flex-col items-end justify-end text-right">
 	<!-- Title -->
-	<div class="overflow-hidden w-fit backdrop-blur-lg" bind:this={titleWrapperRef}>
+	<div class="w-fit overflow-hidden backdrop-blur-lg" bind:this={titleWrapperRef}>
 		<h2
 			bind:this={titleRef}
-			class="text-3xl font-black font-satoshi text-secondary"
+			class="font-satoshi text-secondary text-3xl font-black"
 			style="opacity: 0; transform: translateY(50px);"
 		>
-			Let’s work together!
+			Let's work together!
 		</h2>
 	</div>
 
 	<!-- Description -->
-	<div class="overflow-hidden w-fit max-w-[75ch] mt-2 backdrop-blur-lg" bind:this={descWrapperRef}>
+	<div class="mt-2 w-fit max-w-[75ch] overflow-hidden backdrop-blur-lg" bind:this={descWrapperRef}>
 		<p
 			bind:this={descRef}
-			class="text-sm font-satoshi text-secondary leading-tight"
+			class="font-satoshi text-secondary text-sm leading-tight"
 			style="opacity: 0; transform: translateY(50px);"
 		>
-			I’m available for frontend roles or collaborations—let’s build something great.
+			I'm available for frontend roles or collaborations. Let's build something great.
 		</p>
 	</div>
 
 	<!-- Info -->
-	<div class="overflow-hidden w-fit mt-4 backdrop-blur-lg" bind:this={infoWrapperRef}>
+	<div class="mt-4 w-fit overflow-hidden backdrop-blur-lg" bind:this={infoWrapperRef}>
 		<div
 			bind:this={infoRef}
-			class="flex flex-col items-end gap-1 text-sm font-satoshi text-secondary"
+			class="font-satoshi text-secondary flex flex-col items-end gap-1 text-sm"
 			style="opacity: 0; transform: translateY(50px);"
 		>
 			<span>South Jakarta, Indonesia</span>
 			<span>
-				<a href="mailto:erickkbdn8120@gmail.com" class="underline hover:text-primary transition">
+				<a href="mailto:erickkbdn8120@gmail.com" class="hover:text-primary underline transition">
 					erickkbdn8120@gmail.com
 				</a>
 			</span>
@@ -121,7 +119,7 @@
 					href="https://www.linkedin.com/in/tederick-budiono/"
 					target="_blank"
 					rel="noopener"
-					class="underline hover:text-primary transition"
+					class="hover:text-primary underline transition"
 				>
 					linkedin.com/in/tederick-budiono
 				</a>
@@ -131,17 +129,17 @@
 
 	<!-- Button -->
 	<div
-		class="overflow-hidden w-fit mt-4 backdrop-blur-lg"
+		class="mt-4 w-fit overflow-hidden backdrop-blur-lg"
 		bind:this={buttonWrapperRef}
 		style="opacity: 0; transform: translateY(50px);"
 	>
 		<a
 			href="mailto:erickkbdn8120@gmail.com"
 			bind:this={buttonRef}
-			class="button flex items-center justify-center bg-secondary text-primary px-6 py-2 rounded font-satoshi font-semibold transition overflow-hidden relative h-[2.5rem]"
+			class="button bg-secondary text-primary font-satoshi relative flex h-[2.5rem] items-center justify-center overflow-hidden rounded px-6 py-2 font-semibold transition"
 		>
-			<span class="block relative">
-				<span class="inline-block block">Get in Touch</span>
+			<span class="relative block">
+				<span class="block inline-block">Get in Touch</span>
 			</span>
 		</a>
 	</div>

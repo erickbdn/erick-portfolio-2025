@@ -8,12 +8,10 @@
 </script>
 
 <div class="relative h-[100svh] p-4">
-  <!-- Centered Three.js background -->
- 
   <!-- The grid itself -->
   <div class="grid grid-cols-2 grid-rows-2 h-full gap-4 relative overflow-hidden">
     <GridIntro />
-    <GridNavigation />
+    <div></div> <!-- used to be for GridNavigation -->
     <GridProjects projects={data.projectPreviews}/>
     <GridCTA />
   </div>
